@@ -1,0 +1,47 @@
+controllers:
+    resource: ../src/Controller/
+    type: annotation
+
+kernel:
+    resource: ../src/Kernel.php
+    type: annotation
+
+index:
+  path: /race
+  methods: GET
+  controller: App\Controller\CharacterController::chooseRace
+  
+chosenRace:
+  path: /race/{race}
+  methods: GET
+  controller: App\Controller\CharacterController::raceChosen
+
+chooseClass:
+  path: /class
+  methods: GET
+  controller: App\Controller\CharacterController::chooseClass
+  
+chosenClass:
+  path: /class/{class}
+  methods: GET
+  controller: App\Controller\CharacterController::classChosen
+  
+chooseAbilityScores:
+  path: /scores
+  methods: GET
+  controller: App\Controller\CharacterController::chooseAbilityScores
+  
+chooseEquipment:
+  path: /class/equipment/{class}
+  methods: GET
+  controller: App\Controller\CharacterController::chooseEquipment
+  
+chooseSpells:
+  path: /class/spells/{class}
+  methods: GET
+  controller: App\Controller\CharacterController::chooseSpells
+  
+characterSummary:
+  path: /summary
+  methods: GET
+  controller: App\Controller\CharacterController::characterSummary

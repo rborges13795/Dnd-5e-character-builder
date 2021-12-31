@@ -1,0 +1,171 @@
+{% extends 'base.html.twig' %}
+{% block title %}Index{% endblock %}
+{% block content %}
+    <section id="#Races">        
+    	<div id="#page1:races" class="container" style="display:block;">
+            <div class="row border border-1">
+                <div class="col border border-1">
+    				<div class="col border border-1" id="#races">
+        				<select class="form-select" id="#selectRace" aria-label="Default select example">
+                          <option value="choose" selected>Choose</option>
+                          {% for race in races %}
+                          <option id="#{{ race.index }}" value="{{ race.index }}">{{ race.name }}</option>
+                          {% endfor %}
+                        </select>
+    				</div>
+                </div>
+                <div class="col-9 border border-1">
+                {% for race in races %}
+    				<div class="col border border-1" style="display:none;" id="#{{ race.index }}Body">
+    					<div id="#name">
+    						<h1>{{ race.name }}</h1>
+    					</div>
+    					
+    					<div id="#ability-score">
+    						{% for score in race.ability_bonuses %}
+    						<p><strong>Ability Score Increase:</strong> Your {{ score.ability_score.index }} score increases by {{ score.bonus }}</p>
+    						{% endfor %}
+    					</div>
+    					
+    					<div id="#age">
+    						<p><strong>Age:</strong> {{ race.age }}</p>
+    					</div>
+    					
+    					<div id="#alignment">
+        					<p><strong>Alignment:</strong> {{ race.alignment }}</p>
+    					</div>
+    					
+    					<div id="#size">
+        					<p><strong>Size:</strong> {{ race.size_description }}</p>
+    					</div>
+    					
+    					<div id="#language">
+        					<p><strong>Language:</strong> {{ race.language_desc }}</p>
+    					</div>
+    					
+    					<div id="#speed">
+        					<p><strong>Speed:</strong> Your base walking speed is {{ race.speed }} feet.</p>
+    					</div>
+    					
+    					{% if race.starting_proficiencies is not empty %}
+                    	<div id="#RaceStartingProficiencies"">
+                            <p><strong>Starting Proficiencies:</strong>{% for startingProficiency in race.starting_proficiencies %}
+                            	{{ startingProficiency.name }};
+                            {% endfor %}</p>
+                        </div>
+                    	{% endif %} 
+                    	
+                    	{% if race.starting_proficiencies_options is defined %}
+    					<div id="#RaceStartingProficienciesOptions"">
+                            <p><strong>Starting Proficiencies Options</strong></p>
+                            {% for i in 1..race.starting_proficiencies_options.choose %}
+                            <select class="form-select" id="#selectProficiencies" aria-label="Default select example">
+                                <option value="choose" selected>Choose</option>
+                                {% for options in race.starting_proficiencies_options.from %}
+                                    <option id="#{{ race.index }}" value="{{ options.index }}">{{ options.name }}</option>
+                                {% endfor %}
+                            </select>
+                            {% endfor %}
+                        </div>
+    					{% endif %}
+    					
+    					{% if race.language_options is defined %}
+    					<div id="#RaceLanguageOptions">
+                            <p><strong>Starting Language Options:</strong></p>
+                            {% for i in 1..race.language_options.choose %}
+                            <select class="form-select" id="#selectProficiencies" aria-label="Default select example">
+                                <option value="choose" selected>Choose</option>
+                                {% for options in race.language_options.from %}
+                                    <option id="#{{ race.index }}" value="{{ options.index }}">{{ options.name }}</option>
+                                {% endfor %}
+                            </select>
+                            {% endfor %}
+                        </div>
+    					{% endif %}
+    					
+    				</div>
+    			{% endfor %}	
+                </div>
+            </div>
+            <button type="button" id="#next1" class="btn btn-dark">Next</button>
+        </div>
+    </section>
+    <section id="#Classes">
+        <div id="#page2:classes" class="container" style="display:block;">
+        	<div class="row border border-1">
+        		<div class="col border border-1">
+    				<div class="col border border-1" id="#classes">
+						<select class="form-select" id="#selectClass" aria-label="Default select example">
+                            <option value="choose" selected>Choose</option>
+                            {% for class in classes %}
+                            	<option id="#{{ class.index }}" value="{{ class.index }}">{{ class.name }}</option>
+                              {% endfor %}
+                        </select>
+    				</div>
+                </div>
+            	<div class="col-9 border border-1">
+            	{% for class in classes %}
+            		<div class="col border border-1" style="display:none;" id="#{{ class.index }}Body">
+            		
+            			<div id="#className">
+    						<h1>{{ class.name }}</h1>
+    					</div>
+    					
+    					<div id="#classHitDie">
+    						<p><strong>Hit Dice:</strong> 1d{{ class.hit_die }} per {{ class.index }} level</p>
+    						<p><strong>Hit Points at 1st Level:</strong> {{ class.hit_die }} + your constitution modifier</p>
+    						<p><strong>Hit Points at Higher Levels:</strong> 1d{{ class.hit_die }} + your constitution modifier per level after 1st</p>
+    					</div>
+    					
+                        {% if class.proficiency_choices is not empty %}
+    					<div id="#ClassProficienciesOptions">
+                            <p><strong>Starting Proficiency Options:</strong></p> 
+        					{% for profOptions in class.proficiency_choices %}
+                                <p><strong>Choose {{ profOptions.choose }}</strong></p>
+                                {% for i in 1..profOptions.choose %}
+                                    <select class="form-select" id="#selectClassProficiencies" aria-label="Default select example">
+                                        <option value="choose" selected>Choose</option>
+                                        {% for options in profOptions.from %}
+                                            <option id="#{{ class.index }}" value="{{ options.index }}">{{ options.name }}</option>
+                                        {% endfor %}
+                                    </select>
+                                {% endfor %}
+                            {% endfor %}    
+                        </div>
+    					{% endif %}
+    					
+    					<div id="#classProficiencies">
+    						<p>
+        						<strong>Proficiencies:</strong>
+        						{% for proficiency in class.proficiencies %}
+                                	{{ proficiency.name }};
+                                {% endfor %}
+                            </p>
+    					</div>
+    					
+    					<div id="#classSavingThrows">
+    						<p>
+        						<strong>Saving Throws:</strong>
+        						{% for savingThrow in class.saving_throws %}
+                                	{{ savingThrow.name }};
+                                {% endfor %}
+                            </p>
+    					</div>
+    					
+
+    					
+    					<div id="#classSpellCasting">
+    						<p></p>
+    					</div>
+
+    					
+            		</div>
+        		{% endfor %}
+            	</div>
+        	</div>
+        	<button type="button" id="#previous2" class="btn btn-secondary">Previous</button>
+    		<button type="button" id="#next2" class="btn btn-dark">Next</button>
+    	</div>
+    </section>
+	<script src="{{ asset('assets/js/index.js') }}" type="module"></script>
+{% endblock %}

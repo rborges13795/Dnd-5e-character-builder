@@ -1,0 +1,559 @@
+{% extends 'base.html.twig' %}
+{% block title %}Index{% endblock %}
+{% block content %}
+<section id="#Pages" class="container pb-2">
+    <div class="btn-group" role="group" aria-label="Basic outlined example">
+        <button type="button" onclick="changePage('race')" class="btn btn-outline-secondary"><strong>Races</strong></button>
+        <button type="button" onclick="changePage('class')" class="btn btn-outline-secondary"><strong>Classes</strong></button>
+        <button type="button" onclick="changePage('scores')" class="btn btn-outline-secondary"><strong>Ability Score</strong></button>
+        <button type="button" onclick="changePage('summary')" class="btn btn-outline-secondary"><strong>Summary</strong></button>
+    </div>
+</section>
+{% if races is defined %}
+<section id="#Races">        
+	<div id="#page1:races" class="container">
+        <div class="row border border-1">
+            <div class="col border border-1">
+				<div class="col border border-1" id="#races">
+    				<select class="form-select" id="#selectRace" aria-label="Default select example">
+        				{% if race is not defined or race is null %}
+    						<option value="choose">Choose Race</option>
+    					{% else %}
+    						<option value="choose" selected>Choose Race</option>
+    					{% endif %}
+    					
+                        {% for notSelectedRace in races %}
+                        	<option id="#{{ notSelectedRace }}" value="{{ notSelectedRace }}">{{ notSelectedRace }}</option>
+                            {% if race is defined and race is not null %}
+                                {% if notSelectedRace == race.getName %}
+                                	<option id="#{{ race.getName }}" value="{{ race.getName }}" selected>{{ race.getName }}</option>
+                                {% endif %}
+                            {% endif %}
+                        {% endfor %}
+                    </select>
+				</div>
+            </div>
+            {% if race is defined and race is not null %}
+                <div class="col-9 border border-1">
+    				<div class="col" style="display:block;" id="#{{ race.getIndex }}Body">
+    					<div id="#name">
+    						<h1>{{ race.getName }}</h1>
+    					</div>
+    					{% if race.getName is not same as 'Human' %}
+    					<div id="#ability-score">
+    						{% for score in race.getAbilityBonuses %}
+    						<p><strong>Ability Score Increase:</strong> Your {{ score.ability_score.index }} score increases by {{ score.bonus }}</p>
+    						{% endfor %}
+    					</div>
+    					{% else %}
+    					<div id="#ability-score">
+    						<p><strong>Ability Score Increase:</strong> All ability scores increase by 1</p>
+    					</div>
+    					{% endif %}
+    					<div id="#age">
+    						<p><strong>Age:</strong> {{ race.getAge }}</p>
+    					</div>
+    					
+    					<div id="#alignment">
+        					<p><strong>Alignment:</strong> {{ race.getAlignment }}</p>
+    					</div>
+    					
+    					<div id="#size">
+        					<p><strong>Size:</strong> {{ race.getSizeDescription }}</p>
+    					</div>
+    					
+    					<div id="#classLanguage">
+        					<p><strong>Language:</strong> {{ race.getLanguageDescription }}</p>
+        					{% for language in race.getLanguages %}
+    							{% if language.name is not same as 'Common' %}
+        							<p hidden id="#language">{{ language.name }}</p>
+        						{% endif %}
+        					{% endfor %}
+    					</div>
+    					
+    					<div id="#speed">
+        					<p><strong>Speed:</strong> Your base walking speed is {{ race.getSpeed }} feet.</p>
+    					</div>
+    					
+    					{% if race.getStartingProficiencies is not empty %}
+                    	<div id="#RaceStartingProficiencies"">
+                            <p>
+                            	<strong>Starting Proficiencies:</strong>
+                            	{% for startingProficiency in race.getStartingProficiencies %}
+                                	{{ startingProficiency.name }};
+                                {% endfor %}
+                            </p>
+                        </div>
+                    	{% endif %} 
+                    	
+                    	{% if race.getStartingProficiencyOptions is not empty %}
+    					<div id="#RaceStartingProficiencyOptions">
+                            <p><strong>Starting Proficiencies Options</strong>
+                             (Choose {{ race.getStartingProficiencyOptions.choose }})</p>
+                            <span id="#raceProficiencyLength" hidden>{{ race.getStartingProficiencyOptions.choose }}</span>
+                            {% if race.getStartingProficiencyOptions.choose > 1 %}
+                                <select class="form-select" id="#selectProficiencyOptions" aria-label="Default select example" multiple>
+                                    {% for options in race.getStartingProficiencyOptions.from %}
+                                        <option id="#{{ options.index }}" value="{{ options.name }}">{{ options.name }}</option>
+                                    {% endfor %}
+                                </select>
+                            {% else %}
+                            	<select class="form-select" id="#selectProficiencyOptions" aria-label="Default select example">
+                                    {% for options in race.getStartingProficiencyOptions.from %}
+                                        <option id="#{{ options.index }}" value="{{ options.name }}">{{ options.name }}</option>
+                                    {% endfor %}
+                                </select>
+                            {% endif %}
+                        </div>
+    					{% endif %}
+    					
+    					{% if race.getLanguageOptions is not empty %}
+    					<div id="#RaceLanguageOptions">
+                            <p><strong>Starting Language Options:</strong></p>
+                            {% for i in 1..race.getLanguageOptions.choose %}
+                            <select class="form-select" id="#selectLanguages" aria-label="Default select example">
+                                <option value="choose" selected>Choose</option>
+                                {% for options in race.getLanguageOptions.from %}
+                                    <option id="#{{ options.index }}" value="{{ options.name }}">{{ options.name }}</option>
+                                {% endfor %}
+                            </select>
+                            {% endfor %}
+                        </div>
+    					{% endif %}
+    					
+    					<div id="#RaceTraits">
+    						{% for traits in race.getTraits %}
+                            	<p><strong>{{ traits.name }}:</strong> {% for desc in traits.description %}
+                            	{{ desc }} {% endfor %}</p>
+                        	{% endfor %}
+    					</div>
+    				</div>
+                </div>
+            {% else %}
+                <div class="col-9 border border-1">
+                </div>
+            {% endif %}
+        </div>
+        {% if race is not defined or race is null %}
+        <button type="button" id="#toChosenRace" class="btn btn-dark">Save</button>
+        {% else %}
+        <button type="button" id="#toClass" class="btn btn-dark">Save</button>
+        {% endif %}
+    </div>
+</section>
+{% endif %}
+
+{% if class is not defined and classes is defined %}
+<section id="#Classes">
+    <div id="#page2:classes" class="container">
+    	<div class="row border border-1">
+    		<div class="col border border-1">
+				<div class="col border border-1" id="#classes">
+					<select class="form-select" id="#selectClass" aria-label="Default select example">
+						<option value="choose" selected>Choose Class</option>
+						{% for class in classes %}
+                    	<option id="#{{ class }}" value="{{ class }}">{{ class }}</option>
+                    	{% endfor %}
+                    </select>
+				</div>
+            </div>
+        	<div class="col-9 border border-1">
+        	</div>
+    	</div>
+		<button type="button" id="#toChosenClass" class="btn btn-dark">Save</button>
+	</div>
+</section>
+{% endif %}
+{% if class is defined and classes is defined %}
+<section id="#Classes">
+    <div id="#page2:classes" class="container">
+    	<div class="row border border-1">
+    		<div class="col border border-1">
+				<div class="col" id="#classes">
+					<select class="form-select" id="#selectClass" aria-label="Default select example">
+                        <option value="choose">Choose Class</option>
+                        {% for notSelectedClass in classes %}
+                        <option id="#{{ notSelectedClass }}" value="{{ notSelectedClass }}">{{ notSelectedClass }}</option>
+                        {% if notSelectedClass == class.getName %}
+                    	<option id="#{{ class.getName }}" value="{{ class.getName }}" selected>{{ class.getName }}</option>
+						{% endif %}
+                        {% endfor %}
+                    </select>
+				</div>
+            </div>
+        	<div class="col-9">
+        		<div class="col" style="display:block;" id="#{{ class.getIndex }}Body">
+        		
+        			<div id="#className">
+						<h1 class="col-2">{{ class.getName }}</h1>
+					</div>
+					
+					<div id="#classHitDie">
+						<p><strong>Hit Dice:</strong> 1d{{ class.getHitDie }} per {{ class.getIndex }} level</p>
+						<p><strong>Hit Points at 1st Level:</strong> {{ class.getHitDie }} + your constitution modifier</p>
+						<p><strong>Hit Points at Higher Levels:</strong> 1d{{ class.getHitDie }} + your constitution modifier per level after 1st</p>
+					</div>
+					
+                    {% if class.getProficiencyChoices is not empty %}
+					<div id="#ClassProficienciesOptions">
+                        <p><strong>Starting Proficiency Options:</strong></p> 
+					    {% if class.getName == 'Monk' %}
+							<span style="font-size: smaller;">*Choose one type of artisan's tools or one musical instrument</span>
+						{% endif %}
+    					{% for profOptions in class.getProficiencyChoices %}
+                            <p><strong>Choose {{ profOptions.choose }}</strong></p>
+                            <span id="#classProficiencyLength{{ loop.index }}" hidden>{{ profOptions.choose }}</span>
+                                <select class="form-select" id="#selectClassProficiencies{{ loop.index }}" aria-label="Default select example" multiple>
+                                    <option value="choose" selected>Choose</option>
+                                    {% for options in profOptions.from %}
+                                        <option id="#{{ options.index }}" value="{{ options.name }}">{{ options.name }}</option>
+                                    {% endfor %}
+                                </select>
+                        {% endfor %}    
+                    </div>
+					{% endif %}
+					
+					<div id="#classProficiencies">
+						<p>
+    						<strong>Proficiencies:</strong>
+    						{% for proficiency in class.getProficiencies %}
+                            	{{ proficiency.name }};
+                            {% endfor %}
+                        </p>
+					</div>
+					
+					<div id="#classSavingThrows">
+						<p>
+    						<strong>Saving Throws:</strong>
+    						{% for savingThrow in class.getSavingThrows %}
+                            	{{ savingThrow.name }};
+                            {% endfor %}
+                        </p>
+					</div>
+					
+        		</div>
+        	</div>
+    	</div>
+		<button type="button" id="#toAbilityScores" class="btn btn-dark">Save</button>
+	</div>
+</section>
+{% endif %}
+
+{% if scores is defined %}
+<section id="#abilityScores">
+	<span id="#chosenClass" hidden>{{ chosenClass }}</span>
+    <div id="#page:abilityScores" class="container">
+    	<div class="row border border-1">
+    		<div class="col border border-1">
+				<div class="col" id="#scores">
+					<table class="table" style="width:100%">
+                        <thead>
+                            <tr>
+                              <th scope="col">Score</th>
+                              <th scope="col"></th>
+                              <th scope="col">Value</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        {% for score in scores %}
+                            <tr>
+                              <th scope="row">{{ score.getFullname }}</th>
+                              <td></td>
+                              <td><input id="#{{ score.getIndex }}" type="number" value="8" style="width:35%"></input></td>
+                            </tr>
+						{% endfor %}
+                        </tbody>
+                    </table>
+				</div>
+            </div>
+        	<div class="col-9 border border-1 pt-2">
+            	<div class="col">
+            		<div id="#scoreDescription" style="display:block;">
+            		{% for score in scores %}
+                    	<p><strong>{{ score.getFullname }}:</strong></p>
+                    	{% for desc in score.getDescription %}
+                    		<p>{{ desc }}</p>
+                    	{% endfor %}
+                	{% endfor %}
+                    </div>
+        		</div>
+        	</div>
+    	</div>
+		<button type="button" id="#toSpells" class="btn btn-dark">Save</button>
+	</div>
+</section>
+{% endif %}
+
+{% if class is defined and class is not null and spells is defined and spells is null %}
+<section id="#noSpells">
+    <div id="#page:chooseSpells" class="container">
+    	<div class="row border border-1">
+    		<div class="col border border-1">
+				<div class="col" id="#noclassSpells">
+					<select class="form-select" id="#selectClass" aria-label="Default select example">
+                    	<option id="#{{ class.getName }}" value="{{ class.getName }}" selected>{{ class.getName }}</option>
+                    </select>
+				</div>
+            </div>
+        	<div class="col-9">
+        		<div class="col" id="#{{ class.getIndex }}Body">
+            		<div id="#noclassSpellCasting">
+            			<p>This class has no spells at level 1.</p>
+                    </div>
+        		</div>
+        	</div>
+    	</div>
+		<button type="button" id="#noSpellsToSummary" class="btn btn-dark">Save</button>
+	</div>
+</section>
+{% endif %}
+
+{% if class is defined and class is not null and spells is defined and spells is not null %}
+<section id="#spells">
+    <div id="#page:chooseSpells" class="container">
+    	<div class="row border border-1">
+    		<div class="col border border-1">
+				<div class="col" id="#classSpells">
+					<select class="form-select" id="#selectClass" aria-label="Default select example">
+                    	<option id="#{{ class.getName }}" value="{{ class.getName }}" selected>{{ class.getName }}</option>
+                    </select>
+                    <p style="display:inline"><strong>Cantrip Options:</strong></p>
+                    <p style="font-size: 0.8em;">Choose {{ spellcasting.cantripsKnown }}</p>
+                    <span id="#cantripMaxLength" hidden>{{ spellcasting.cantripsKnown }}</span>
+                    <select class="form-select" id="#selectClassCantrip" aria-label="Default select example" size="5" multiple>
+                        <option value="choose" selected>Choose</option>
+                        {% for spell in spells %}
+                        	{% if spell.level == 0 %}
+                            	<option id="#{{ spell.index }}" value="{{ spell.index }}">{{ spell.name }}</option>
+                            {% endif %}
+                        {% endfor %}
+                    </select>
+                    <p style="display:inline"><strong>Spell Options:</strong></p> 
+                    <p style="font-size: 0.8em;">Choose {{ spellcasting.spellsKnown }}</p>
+                    <span id="#spellsMaxLength" hidden>{{ spellcasting.spellsKnown }}</span>
+                    <select class="form-select" id="#selectClassSpells" aria-label="Default select example" size="5" multiple>
+                        <option value="choose" selected>Choose</option>
+                        {% for spell in spells %}
+                            {% if spell.level == 1 %}
+                            	<option id="#{{ spell.index }}" value="{{ spell.index }}">{{ spell.name }}</option>
+                            {% endif %}
+                        {% endfor %}
+                    </select>
+				</div>
+            </div>
+        	<div class="col-9">
+        		<div class="col" id="#{{ class.getIndex }}Body">
+            		<div id="#classSpellCasting">
+                    	{% for spellcast in spellcasting.info %}
+                        	<p><strong>{{ spellcast.name }}:</strong></p>
+                        	{% for desc in spellcast.desc %}
+                        		<p>{{ desc }}</p>
+                        	{% endfor %}
+                    	{% endfor %}
+                    </div>
+                    {% for spell in spells %}
+                		<div id="#info:{{ spell.index }}" style="display:none;">
+                        	<p><strong>Spell Info:</strong></p> 
+                        </div>
+                    {% endfor %}
+        		</div>
+        	</div>
+    	</div>
+		<button type="button" id="#toSummary" class="btn btn-dark">Save</button>
+	</div>
+</section>
+{% endif %}
+
+{% if class is defined and equipment is defined %}
+<section id="#Equipment">
+    <div id="#page:equipment" class="container" style="display:block;">
+    	<div class="row border border-1">
+    		<div class="col border border-1">
+				<div class="col border border-1" id="#classes">
+					<select class="form-select" id="#selectClass" aria-label="Default select example">
+                    	<option id="#{{ class.getName }}" value="{{ class.getName }}" selected>{{ class.getName }}</option>
+                    </select>
+				</div>
+            </div>
+        	<div class="col-9 border border-1">
+        		<div class="col border border-1" style="display:block;" id="#{{ class.getIndex }}Body">
+            		<div id="#classEquipment">
+                    	<p><strong>Starting Equipment: (Choose one of each)</strong></p>
+                    	<ul>
+                        {% for gearOptions in equipmentOptions %}
+                    		<li>{{ gearOptions }}</li>
+                        {% endfor %}
+                    	{% for gear in equipment %}
+                    		<li>{{ gear }}</li>
+                        {% endfor %}
+                        </ul>
+                    </div>
+        		</div>
+        	</div>
+    	</div>
+		<button type="button" id="#toSummary" class="btn btn-dark">Save</button>
+	</div>
+</section>
+{% endif %}
+
+{% if character is defined %}
+<section id="#Summary">
+    <div id="#page:summary" class="container">
+    	<div class="row border border-1">
+    		<div class="col border border-1">
+				<div class="col">
+					<p><strong>Hit Points: </strong><span id="#hitPoints"></span></p>
+					<p style="display: inline"><strong>Proficiency Bonus: </strong>2</p>
+					<table class="table" style="width:100%">
+                        <thead>
+                            <tr>
+                              <th scope="col"></th>
+                              <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                              <th scope="row">Race:</th>
+                              <td>{{ charRace.getName }}</td>
+                            </tr>
+                            <tr>
+                              <th scope="row">Class:</th>
+                              <td>{{ charClass.getName }}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <table class="table" style="width:100%">
+                        <thead>
+                            <tr>
+                              <th scope="col">Score</th>
+                              <th scope="col">Value</th>
+                              <th style="width:50%" scope="col">Modifier</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        {% for name, score in character.getAbilityScores %}
+                            <tr>
+                              <th id="#{{ name }}" scope="row">{{ name }}</th>
+                              <td id="#{{ name }}Value">{{ score.value }}</td>
+                              <td id="#{{ name }}Mod" class="text-center">{{ score.mod }}</td>
+                            </tr>
+						{% endfor %}
+                        </tbody>
+                    </table>
+                    <p style="display:inline"><strong>Chosen Proficiencies</strong></p>
+                    <table class="table" style="width:100%">
+                        <thead>
+                            <tr>
+                              <th scope="col"></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        {% for prof in character.getAllChosenProficiencies %}
+                            <tr>
+                              <td>{{ prof }}</th>
+                            </tr>
+						{% endfor %}
+                        </tbody>
+                    </table>
+				</div>
+            </div>
+        	<div class="col-9 border border-1">
+        		<div class="col">
+            		<div>
+                		<div id="#classHitDie" hidden>
+    						<p><strong>Hit Dice:</strong> 1d{{ charClass.getHitDie }} per {{ charClass.getIndex }} level</p>
+    						<p>
+    							<strong>Hit Points at 1st Level:</strong> 
+    							<span id="#hitPointsRule">{{ charClass.getHitDie }}</span> + your constitution modifier
+							</p>
+    						<p>
+    							<strong>Hit Points at Higher Levels:</strong> 
+    							1d{{ charClass.getHitDie }} + your constitution modifier per level after 1st
+							</p>
+    					</div>
+                   	 	<p><strong>Hit Dice:</strong> 1d{{ charClass.getHitDie }} per {{ charClass.getIndex }} level</p>
+                    	<p>
+                        	<strong>Language: </strong>
+                        	{% for language in character.getLanguages %}
+                        	    {{ language }};
+                        	{% endfor %}
+                        </p>
+                    	<p><strong>Speed: </strong>{{ charRace.getSpeed }}</p>
+                    	{% if charRace.getStartingProficiencies is not empty %}
+                    	<div id="#RaceStartingProficiencies"">
+                            <p>
+                            	<strong>Race starting Proficiencies:</strong>
+                            	{% for startingProficiency in charRace.getStartingProficiencies %}
+                                	{{ startingProficiency.name }};
+                                {% endfor %}
+                            </p>
+                        </div>
+                    	{% endif %} 
+                    	{% if charRace.getStartingProficiencies is not empty %}
+                    	<div id="#classProficiencies">
+    						<p>
+        						<strong>Class starting Proficiencies:</strong>
+        						{% for proficiency in charClass.getProficiencies %}
+                                	{{ proficiency.name }};
+                                {% endfor %}
+                            </p>
+    					</div>
+    					{% endif %}
+    					<div id="#RaceTraits">
+    						{% for traits in charRace.getTraits %}
+                            	<p><strong>{{ traits.name }}:</strong> {% for desc in traits.description %}
+                            	{{ desc }} {% endfor %}</p>
+                        	{% endfor %}
+    					</div>
+    					<div id="#ability-score" hidden>
+    						{% for score in charRace.getAbilityBonuses %}
+    						<p id="#{{ score.ability_score.index }}">{{ score.bonus }}</p>
+    						{% endfor %}
+    					</div>
+    					{% if character.getCantrips is not same as [""] and character.getCantrips is not same as null %}
+    					<div id="#characterSpells" class="row">
+    						<div class="col-6">
+    							<p style="display:inline"><strong>Cantrips</strong></p>
+                                <table class="table" style="width:100%">
+                                    <thead>
+                                        <tr>
+                                          <th scope="col"></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                    {% for cantrip in character.getCantrips %}
+                                        <tr>
+                                          <td>{{ cantrip }}</th>
+                                        </tr>
+            						{% endfor %}
+                                    </tbody>
+                                </table>
+    						</div>
+    						<div class="col-6">
+    							<p style="display:inline"><strong>Spells</strong></p>
+                                <table class="table" style="width:100%">
+                                    <thead>
+                                        <tr>
+                                          <th scope="col"></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                    {% for spell in character.getSpells %}
+                                        <tr>
+                                          <td>{{ spell }}</th>
+                                        </tr>
+            						{% endfor %}
+                                    </tbody>
+                                </table>
+    						</div>
+    					</div>
+    					{% endif %}
+                    </div>
+        		</div>
+        	</div>
+    	</div>
+		<button type="button" id="#" class="btn btn-dark">Save</button>
+	</div>
+</section>
+{% endif %}
+{% endblock %}
