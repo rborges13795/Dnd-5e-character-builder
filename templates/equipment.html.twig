@@ -1,0 +1,36 @@
+{% extends 'base.html.twig' %}
+{% block title %}Equipment{% endblock %}
+{% block content %}
+
+{% if class is defined and equipment is defined %}
+    <section id="#Equipment">
+        <div id="#page:equipment" class="container" style="display:block;">
+        	<div class="row border border-1">
+        		<div class="col border border-1">
+    				<div class="col border border-1" id="#classes">
+    					<select class="form-select" id="#selectClass" aria-label="Default select example">
+                        	<option id="#{{ class.getName }}" value="{{ class.getName }}" selected>{{ class.getName }}</option>
+                        </select>
+    				</div>
+                </div>
+            	<div class="col-9 border border-1">
+            		<div class="col border border-1" style="display:block;" id="#{{ class.getIndex }}Body">
+                		<div id="#classEquipment">
+                        	<p><strong>Starting Equipment: (Choose one of each)</strong></p>
+                        	<ul>
+                            {% for gearOptions in equipmentOptions %}
+                        		<li>{{ gearOptions }}</li>
+                            {% endfor %}
+                        	{% for gear in equipment %}
+                        		<li>{{ gear }}</li>
+                            {% endfor %}
+                            </ul>
+                        </div>
+            		</div>
+            	</div>
+        	</div>
+    		<button type="button" id="#toSummary" class="btn btn-dark">Save</button>
+    	</div>
+    </section>
+{% endif %}
+{% endblock %}

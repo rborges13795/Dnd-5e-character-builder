@@ -1,0 +1,50 @@
+{% extends 'base.html.twig' %}
+{% block title %}Index{% endblock %}
+{% block content %}
+
+{% if scores is defined %}
+    <section id="#abilityScores">
+    	<span id="#chosenClass" hidden>{{ chosenClass }}</span>
+        <div id="#page:abilityScores" class="container">
+        	<div class="row border border-1">
+        		<div class="col border border-1">
+    				<div class="col" id="#scores">
+    					<table class="table" style="width:100%">
+                            <thead>
+                                <tr>
+                                  <th scope="col">Score</th>
+                                  <th scope="col"></th>
+                                  <th scope="col">Value</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            {% for score in scores %}
+                                <tr>
+                                  <th scope="row">{{ score.getFullname }}</th>
+                                  <td></td>
+                                  <td><input id="#{{ score.getIndex }}" type="number" value="8" style="width:35%"></input></td>
+                                </tr>
+    						{% endfor %}
+                            </tbody>
+                        </table>
+    				</div>
+                </div>
+            	<div class="col-9 border border-1 pt-2">
+                	<div class="col">
+                		<div id="#scoreDescription" style="display:block;">
+                		{% for score in scores %}
+                        	<p><strong>{{ score.getFullname }}:</strong></p>
+                        	{% for desc in score.getDescription %}
+                        		<p>{{ desc }}</p>
+                        	{% endfor %}
+                    	{% endfor %}
+                        </div>
+            		</div>
+            	</div>
+        	</div>
+    		<button type="button" id="#toSpells" class="btn btn-dark">Save</button>
+    	</div>
+    </section>
+{% endif %}
+
+{% endblock %}

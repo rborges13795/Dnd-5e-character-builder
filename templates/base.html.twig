@@ -43,6 +43,15 @@
     		</div>
 		-->
 		</nav>
+		<section id="#Pages" class="container pb-2">
+            <div class="btn-group" role="group" aria-label="Basic outlined example">
+            	<button type="button" onclick="changePage('index')" class="btn btn-outline-secondary"><strong>Start / Start Over</strong></button>
+                <button type="button" onclick="changePage('race')" class="btn btn-outline-secondary"><strong>Races</strong></button>
+                <button type="button" onclick="changePage('class')" class="btn btn-outline-secondary"><strong>Classes</strong></button>
+                <button type="button" onclick="changePage('scores')" class="btn btn-outline-secondary"><strong>Ability Score</strong></button>
+                <button type="button" onclick="changePage('summary')" class="btn btn-outline-secondary"><strong>Summary</strong></button>
+            </div>
+        </section>
 		
             <section class="content">
             {% block content %} {% endblock %}

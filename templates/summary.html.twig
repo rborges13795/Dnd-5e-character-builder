@@ -1,0 +1,180 @@
+{% extends 'base.html.twig' %}
+{% block title %}Summary{% endblock %}
+{% block content %}
+
+{% if character is defined and charRace is not empty and charClass is not empty%}
+<section id="#Summary">
+    <div id="#page:summary" class="container">
+    	<div class="row border border-1">
+    		<div class="col border border-1">
+				<div class="col">
+					{% if character.getAbilityScores is not empty %}
+						<p><strong>Hit Points: </strong><span id="#hitPoints"></span></p>
+					{% else %}
+						<p><strong>Hit Points: </strong>{{ charClass.getHitDie }}</p>
+					{% endif %}
+					<p style="display: inline"><strong>Proficiency Bonus: </strong>2</p>
+					<table class="table" style="width:100%">
+                        <thead>
+                            <tr>
+                              <th scope="col"></th>
+                              <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                              <th scope="row">Race:</th>
+                              <td>{{ charRace.getName }}</td>
+                            </tr>
+                            <tr>
+                              <th scope="row">Class:</th>
+                              <td>{{ charClass.getName }}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    {% if character.getAbilityScores is not empty %}
+                    <table class="table" style="width:100%">
+                        <thead>
+                            <tr>
+                              <th scope="col">Score</th>
+                              <th scope="col">Value</th>
+                              <th style="width:50%" scope="col">Modifier</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        {% for name, score in character.getAbilityScores %}
+                            <tr>
+                              <th id="#{{ name }}" scope="row">{{ name }}</th>
+                              <td id="#{{ name }}Value">{{ score.value }}</td>
+                              <td id="#{{ name }}Mod" class="text-center">{{ score.mod }}</td>
+                            </tr>
+						{% endfor %}
+                        </tbody>
+                    </table>
+                    {% endif %}
+                    <p style="display:inline"><strong>Chosen Proficiencies</strong></p>
+                    <table class="table" style="width:100%">
+                        <thead>
+                            <tr>
+                              <th scope="col"></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        {% for prof in character.getAllChosenProficiencies %}
+                            <tr>
+                              <td>{{ prof }}</th>
+                            </tr>
+						{% endfor %}
+                        </tbody>
+                    </table>
+				</div>
+            </div>
+        	<div class="col-9 border border-1">
+        		<div class="col">
+            		<div>
+                		<div id="#classHitDie" hidden>
+    						<p><strong>Hit Dice:</strong> 1d{{ charClass.getHitDie }} per {{ charClass.getIndex }} level</p>
+    						<p>
+    							<strong>Hit Points at 1st Level:</strong> 
+    							<span id="#hitPointsRule">{{ charClass.getHitDie }}</span> + your constitution modifier
+							</p>
+    						<p>
+    							<strong>Hit Points at Higher Levels:</strong> 
+    							1d{{ charClass.getHitDie }} + your constitution modifier per level after 1st
+							</p>
+    					</div>
+                   	 	<p><strong>Hit Dice:</strong> 1d{{ charClass.getHitDie }} per {{ charClass.getIndex }} level</p>
+                    	<p>
+                        	<strong>Language: </strong>
+                        	{% for language in character.getLanguages %}
+                        	    {{ language }};
+                        	{% endfor %}
+                        </p>
+                    	<p><strong>Speed: </strong>{{ charRace.getSpeed }}</p>
+                    	{% if charRace.getStartingProficiencies is not empty %}
+                    	<div id="#RaceStartingProficiencies"">
+                            <p>
+                            	<strong>Race starting Proficiencies:</strong>
+                            	{% for startingProficiency in charRace.getStartingProficiencies %}
+                                	{{ startingProficiency.name }};
+                                {% endfor %}
+                            </p>
+                        </div>
+                    	{% endif %} 
+                    	{% if charRace.getStartingProficiencies is not empty %}
+                    	<div id="#classProficiencies">
+    						<p>
+        						<strong>Class starting Proficiencies:</strong>
+        						{% for proficiency in charClass.getProficiencies %}
+                                	{{ proficiency.name }};
+                                {% endfor %}
+                            </p>
+    					</div>
+    					{% endif %}
+    					<div id="#RaceTraits">
+    						{% for traits in charRace.getTraits %}
+                            	<p><strong>{{ traits.name }}:</strong> {% for desc in traits.description %}
+                            	{{ desc }} {% endfor %}</p>
+                        	{% endfor %}
+    					</div>
+    					{% if character.getAbilityScores is not empty %}
+    					<div id="#ability-score" hidden>
+    						{% for score in charRace.getAbilityBonuses %}
+    						<p id="#{{ score.ability_score.index }}">{{ score.bonus }}</p>
+    						{% endfor %}
+    					</div>
+    					{% endif %}
+    					
+    					{% if character.getCantrips is not same as [""] and character.getCantrips is not same as null %}
+    					<div id="#characterSpells" class="row">
+    						<div class="col-6">
+    							<p style="display:inline"><strong>Cantrips</strong></p>
+                                <table class="table" style="width:100%">
+                                    <thead>
+                                        <tr>
+                                          <th scope="col"></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                    {% for cantrip in character.getCantrips %}
+                                        <tr>
+                                          <td>{{ cantrip }}</th>
+                                        </tr>
+            						{% endfor %}
+                                    </tbody>
+                                </table>
+    						</div>
+    						<div class="col-6">
+    							<p style="display:inline"><strong>Spells</strong></p>
+                                <table class="table" style="width:100%">
+                                    <thead>
+                                        <tr>
+                                          <th scope="col"></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                    {% for spell in character.getSpells %}
+                                        <tr>
+                                          <td>{{ spell }}</th>
+                                        </tr>
+            						{% endfor %}
+                                    </tbody>
+                                </table>
+    						</div>
+    					</div>
+    					{% endif %}
+                    </div>
+        		</div>
+        	</div>
+    	</div>
+	</div>
+</section>
+{% else %}
+<section id="#Summary">
+    <div class="container">
+        <p>There is nothing here...</p>
+        <p>Make sure you chose both a class and race!</p>
+    </div>
+</section>
+{% endif %}
+{% endblock %}

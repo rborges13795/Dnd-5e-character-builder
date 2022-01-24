@@ -7,12 +7,17 @@ kernel:
     type: annotation
 
 index:
+  path: /index
+  methods: GET
+  controller: App\Controller\CharacterController::index
+
+race:
   path: /race
   methods: GET
   controller: App\Controller\CharacterController::chooseRace
   
 chosenRace:
-  path: /race/{race}
+  path: /race/{characterRace}
   methods: GET
   controller: App\Controller\CharacterController::raceChosen
 

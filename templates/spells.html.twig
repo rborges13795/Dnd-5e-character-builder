@@ -1,0 +1,84 @@
+{% extends 'base.html.twig' %}
+{% block title %}Index{% endblock %}
+{% block content %}
+
+{% if class is defined and class is not null and spells is defined and spells is null %}
+    <section id="#noSpells">
+        <div id="#page:chooseSpells" class="container">
+        	<div class="row border border-1">
+        		<div class="col border border-1">
+    				<div class="col" id="#noclassSpells">
+    					<select class="form-select" id="#selectClass" aria-label="Default select example">
+                        	<option id="#{{ class.getName }}" value="{{ class.getName }}" selected>{{ class.getName }}</option>
+                        </select>
+    				</div>
+                </div>
+            	<div class="col-9">
+            		<div class="col" id="#{{ class.getIndex }}Body">
+                		<div id="#noclassSpellCasting">
+                			<p>This class has no spells at level 1.</p>
+                        </div>
+            		</div>
+            	</div>
+        	</div>
+    		<button type="button" id="#noSpellsToSummary" class="btn btn-dark">Save</button>
+    	</div>
+    </section>
+    {% endif %}
+    
+    {% if class is defined and class is not null and spells is defined and spells is not null %}
+    <section id="#spells">
+        <div id="#page:chooseSpells" class="container">
+        	<div class="row border border-1">
+        		<div class="col border border-1">
+    				<div class="col" id="#classSpells">
+    					<select class="form-select" id="#selectClass" aria-label="Default select example">
+                        	<option id="#{{ class.getName }}" value="{{ class.getName }}" selected>{{ class.getName }}</option>
+                        </select>
+                        <p style="display:inline"><strong>Cantrip Options:</strong></p>
+                        <p style="font-size: 0.8em;">Choose {{ spellcasting.cantripsKnown }}</p>
+                        <span id="#cantripMaxLength" hidden>{{ spellcasting.cantripsKnown }}</span>
+                        <select class="form-select" id="#selectClassCantrip" aria-label="Default select example" size="5" multiple>
+                            <option value="choose" selected>Choose</option>
+                            {% for spell in spells %}
+                            	{% if spell.level == 0 %}
+                                	<option id="#{{ spell.index }}" value="{{ spell.index }}">{{ spell.name }}</option>
+                                {% endif %}
+                            {% endfor %}
+                        </select>
+                        <p style="display:inline"><strong>Spell Options:</strong></p> 
+                        <p style="font-size: 0.8em;">Choose {{ spellcasting.spellsKnown }}</p>
+                        <span id="#spellsMaxLength" hidden>{{ spellcasting.spellsKnown }}</span>
+                        <select class="form-select" id="#selectClassSpells" aria-label="Default select example" size="5" multiple>
+                            <option value="choose" selected>Choose</option>
+                            {% for spell in spells %}
+                                {% if spell.level == 1 %}
+                                	<option id="#{{ spell.index }}" value="{{ spell.index }}">{{ spell.name }}</option>
+                                {% endif %}
+                            {% endfor %}
+                        </select>
+    				</div>
+                </div>
+            	<div class="col-9">
+            		<div class="col" id="#{{ class.getIndex }}Body">
+                		<div id="#classSpellCasting">
+                        	{% for spellcast in spellcasting.info %}
+                            	<p><strong>{{ spellcast.name }}:</strong></p>
+                            	{% for desc in spellcast.desc %}
+                            		<p>{{ desc }}</p>
+                            	{% endfor %}
+                        	{% endfor %}
+                        </div>
+                        {% for spell in spells %}
+                    		<div id="#info:{{ spell.index }}" style="display:none;">
+                            	<p><strong>Spell Info:</strong></p> 
+                            </div>
+                        {% endfor %}
+            		</div>
+            	</div>
+        	</div>
+    		<button type="button" id="#toSummary" class="btn btn-dark">Save</button>
+    	</div>
+    </section>
+{% endif %}
+{% endblock %}

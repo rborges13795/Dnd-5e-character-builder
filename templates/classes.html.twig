@@ -1,0 +1,100 @@
+{% extends 'base.html.twig' %}
+{% block title %}Index{% endblock %}
+{% block content %}
+
+{% if class is not defined and classes is defined %}
+    <section id="#Classes">
+        <div id="#page2:classes" class="container">
+        	<div class="row border border-1">
+        		<div class="col border border-1">
+    				<div class="col border border-1" id="#classes">
+    					<select class="form-select" id="#selectClass" aria-label="Default select example">
+    						<option value="choose" selected>Choose Class</option>
+    						{% for class in classes %}
+                        	<option id="#{{ class }}" value="{{ class }}">{{ class }}</option>
+                        	{% endfor %}
+                        </select>
+    				</div>
+                </div>
+            	<div class="col-9 border border-1">
+            	</div>
+        	</div>
+    		<button type="button" id="#toChosenClass" class="btn btn-dark">Save</button>
+    	</div>
+    </section>
+{% endif %}
+{% if class is defined and classes is defined %}
+    <section id="#Classes">
+        <div id="#page2:classes" class="container">
+        	<div class="row border border-1">
+        		<div class="col border border-1">
+    				<div class="col" id="#classes">
+    					<select class="form-select" id="#selectClass" aria-label="Default select example">
+                            <option value="choose">Choose Class</option>
+                            {% for notSelectedClass in classes %}
+                            <option id="#{{ notSelectedClass }}" value="{{ notSelectedClass }}">{{ notSelectedClass }}</option>
+                            {% if notSelectedClass == class.getName %}
+                        	<option id="#{{ class.getName }}" value="{{ class.getName }}" selected>{{ class.getName }}</option>
+    						{% endif %}
+                            {% endfor %}
+                        </select>
+    				</div>
+                </div>
+            	<div class="col-9">
+            		<div class="col" style="display:block;" id="#{{ class.getIndex }}Body">
+            		
+            			<div id="#className">
+    						<h1 class="col-2">{{ class.getName }}</h1>
+    					</div>
+    					
+    					<div id="#classHitDie">
+    						<p><strong>Hit Dice:</strong> 1d{{ class.getHitDie }} per {{ class.getIndex }} level</p>
+    						<p><strong>Hit Points at 1st Level:</strong> {{ class.getHitDie }} + your constitution modifier</p>
+    						<p><strong>Hit Points at Higher Levels:</strong> 1d{{ class.getHitDie }} + your constitution modifier per level after 1st</p>
+    					</div>
+    					
+                        {% if class.getProficiencyChoices is not empty %}
+    					<div id="#ClassProficienciesOptions">
+                            <p><strong>Starting Proficiency Options:</strong></p> 
+    					    {% if class.getName == 'Monk' %}
+    							<span style="font-size: smaller;">*Choose one type of artisan's tools or one musical instrument</span>
+    						{% endif %}
+        					{% for profOptions in class.getProficiencyChoices %}
+                                <p><strong>Choose {{ profOptions.choose }}</strong></p>
+                                <span id="#classProficiencyLength{{ loop.index }}" hidden>{{ profOptions.choose }}</span>
+                                    <select class="form-select" id="#selectClassProficiencies{{ loop.index }}" aria-label="Default select example" multiple>
+                                        <option value="choose" selected>Choose</option>
+                                        {% for options in profOptions.from %}
+                                            <option id="#{{ options.index }}" value="{{ options.name }}">{{ options.name }}</option>
+                                        {% endfor %}
+                                    </select>
+                            {% endfor %}    
+                        </div>
+    					{% endif %}
+    					
+    					<div id="#classProficiencies">
+    						<p>
+        						<strong>Proficiencies:</strong>
+        						{% for proficiency in class.getProficiencies %}
+                                	{{ proficiency.name }};
+                                {% endfor %}
+                            </p>
+    					</div>
+    					
+    					<div id="#classSavingThrows">
+    						<p>
+        						<strong>Saving Throws:</strong>
+        						{% for savingThrow in class.getSavingThrows %}
+                                	{{ savingThrow.name }};
+                                {% endfor %}
+                            </p>
+    					</div>
+    					
+            		</div>
+            	</div>
+        	</div>
+    		<button type="button" id="#toAbilityScores" class="btn btn-dark">Save</button>
+    	</div>
+    </section>
+{% endif %}
+{% endblock %}

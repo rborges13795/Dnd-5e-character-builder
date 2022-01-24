@@ -1,7 +1,6 @@
 <?php
 namespace App\Controller;
 
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Dnd5eApi\Entity\Races;
 use Dnd5eApi\Entity\Classes;
@@ -9,11 +8,10 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 use App\Entity\Character;
 use Dnd5eApi\Entity\AbilityScores;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 class CharacterController extends AbstractController
 {
-
-    const INDEX = 'index.html.twig';
 
     private $requestStack;
 
@@ -21,28 +19,41 @@ class CharacterController extends AbstractController
     {
         $this->requestStack = $requestStack;
     }
-
-    public function chooseRace(): Response
+    
+    public function index(): Response
     {
-        $session = $this->requestStack->getSession();
+        $this->requestStack->getSession()->clear();
+        
         $racesAll = new Races();
         $allRaces = $racesAll->allFirstCharUppercase();
-        return $this->render(self::INDEX, [
+        
+        return $this->render('races.html.twig', [
             'races' => $allRaces
         ]);
     }
 
-    public function raceChosen(string $race): Response
+    public function chooseRace(): Response
+    {
+        $this->requestStack->getSession();
+        $racesAll = new Races();
+        $allRaces = $racesAll->allFirstCharUppercase();
+        
+        return $this->render('races.html.twig', [
+            'races' => $allRaces
+        ]);
+    }
+
+    public function raceChosen(string $characterRace): Response
     {
         $session = $this->requestStack->getSession();
         $character = $session->get('character');
-        $characterCreate = $this->saveRace($race, $character);
+        $characterCreate = $this->saveRace($characterRace, $character);
         $session->set('character', $characterCreate);
         $racesAll = new Races();
-        $race = $racesAll->$race();
+        $race = $racesAll->$characterRace();
         $allRaces = $racesAll->allFirstCharUppercase();
 
-        return $this->render(self::INDEX, [
+        return $this->render('races.html.twig', [
             'race' => $race,
             'races' => $allRaces
         ]);
@@ -61,7 +72,7 @@ class CharacterController extends AbstractController
         $classesAll = new Classes();
         $classes = $classesAll->allFirstCharUppercase();
 
-        return $this->render(self::INDEX, [
+        return $this->render('classes.html.twig', [
             'classes' => $classes
         ]);
     }
@@ -77,7 +88,7 @@ class CharacterController extends AbstractController
         $class = $classesAll->$class();
         $allClasses = $classesAll->allFirstCharUppercase();
 
-        return $this->render(self::INDEX, [
+        return $this->render('classes.html.twig', [
             'class' => $class,
             'classes' => $allClasses
         ]);
@@ -100,7 +111,7 @@ class CharacterController extends AbstractController
             $abilityScores[] = $scores->$score();
         }
 
-        return $this->render(self::INDEX, [
+        return $this->render('scores.html.twig', [
             'scores' => $abilityScores,
             'chosenClass' => $character->getClass()
         ]);
@@ -117,7 +128,7 @@ class CharacterController extends AbstractController
         $classesAll = new Classes();
         $class = $classesAll->$class();
 
-        return $this->render(self::INDEX, [
+        return $this->render('spells.html.twig', [
             'class' => $class,
             'spells' => $class->getSpells(),
             'spellcasting' => $class->getSpellcasting()
@@ -125,6 +136,8 @@ class CharacterController extends AbstractController
     }
 
     /*
+     * !----- Add equipment later -----!
+     * 
      * public function chooseEquipment(string $class): Response
      * {
      * $session = $this->requestStack->getSession();
@@ -133,7 +146,7 @@ class CharacterController extends AbstractController
      * $classesAll = new Classes();
      * $class = $classesAll->$classChosen();
      *
-     * return $this->render(self::INDEX, [
+     * return $this->render('equipment.html.twig', [
      * 'class' => $class,
      * 'equipment' => $class->getStartingEquipment(),
      * 'equipmentOptions' => $class->getStartingEquipmentOptions()
@@ -145,6 +158,9 @@ class CharacterController extends AbstractController
     {
         $session = $this->requestStack->getSession();
         $character = $session->get('character');
+        if ($character == null) {
+            $character = $this->getCharacter();
+        }
         
         if ($character->getCantrips() == [""] || $character->getCantrips() == null) {
             $scores = $this->saveSpells($character, $request);
@@ -153,12 +169,21 @@ class CharacterController extends AbstractController
         
         $races = new Races();
         $race = $character->getRace();
+        if ($race !== "") {
+            $charRace = $races->$race();            
+        } else {
+            $charRace = "";
+        }
+        
         $classes = new Classes();
         $class = $character->getClass();
-        $charRace = $races->$race();
-        $charClass = $classes->$class();
+        if ($class !== "") {
+            $charClass = $classes->$class();
+        } else {
+            $charClass = "";
+        }
         
-        return $this->render(self::INDEX, [
+        return $this->render('summary.html.twig', [
             'character' => $character,
             'charRace' => $charRace,
             'charClass' => $charClass
@@ -178,7 +203,7 @@ class CharacterController extends AbstractController
     {
         $character = $this->getCharacter($character);
         $character->setRace($race);
-        $character->setRaceProficiencies(null);
+        $character->setRaceProficiencies();
         
         return $character;
     }
@@ -187,7 +212,7 @@ class CharacterController extends AbstractController
     {
         $character = $this->getCharacter($character);
         $character->setClass($class);
-        $character->setClassProficiencies(null);
+        $character->setClassProficiencies();
         $character->setSpells(null);
         $character->setCantrips(null);
         return $character;
@@ -265,8 +290,6 @@ class CharacterController extends AbstractController
         return $character;
     }
     
-    public static function getSubscribedServices(): array
-    {}
 
 }
 

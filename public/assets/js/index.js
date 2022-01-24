@@ -41,7 +41,6 @@ if (toClass !== null) {
 			raceProficiencies = [...selectRaceProficiencyOptions.selectedOptions].map(option => option.value);
 
 			if (raceProficiencies.length > raceProfincieciesMaxLength) {
-				raceProficiencies.pop();
 				alert(`you can only choose a maximum of ${raceProfincieciesMaxLength} proficiencies`);
 			}
 
@@ -113,7 +112,6 @@ if (toAbilityScores !== null) {
 			}
 			
 			if(classProficiencies1.length > classProficiencyMaxLength1) {
-				classProficiencies1.pop();
 				alert(`you can only choose a maximum of ${classProficiencyMaxLength1} proficiencies`);
 			}
 			
@@ -121,7 +119,7 @@ if (toAbilityScores !== null) {
 				alert(`you need to choose at least ${classProficiencyMaxLength1} proficiencies`);
 			}
 			
-			if (classProficiencies1[0] !== 'choose' && classProficiencies1.length == classProficiencyMaxLength1 && 
+			if (!classProficiencies1.includes('choose') && classProficiencies1.length == classProficiencyMaxLength1 && 
 			selectClassProficiencyOptions2 == null) {
 				window.location.replace(`/scores?classProficiencies=${classProficiencies1}`);
 			}
@@ -136,7 +134,6 @@ if (toAbilityScores !== null) {
 			}
 			
 			if(classProficiencies2.length > classProficiencyMaxLength2) {
-				classProficiencies2.pop();
 				alert(`you can only choose a maximum of ${classProficiencyMaxLength2} proficiencies`);
 			}
 			
@@ -154,14 +151,15 @@ if (toAbilityScores !== null) {
 			classProficiencyMaxLength3 = document.getElementById("#classProficiencyLength3").innerHTML;
 			classProficiencies3 = [...selectClassProficiencyOptions3.selectedOptions].map(option => option.value);
 			
-			if (classProficiencies1[0] == 'choose' && classProficiencies2[0] == 'choose') alert('You need to choose a tool or a musical instrument');
+			if (classProficiencies1[0] == 'choose' && classProficiencies2[0] == 'choose') 
+				alert('You need to choose a tool or a musical instrument');
 			
-			if (classProficiencies1[0] !== 'choose' && classProficiencies2[0] !== 'choose') alert('You need to choose either a tool or a musical instrument');
+			if (classProficiencies1[0] !== 'choose' && classProficiencies2[0] !== 'choose') 
+				alert('You need to choose either a tool or a musical instrument');
 			
 			if (classProficiencies3[0] == 'choose') alert('You need to choose a Skill');
 			
 			if(classProficiencies3.length > classProficiencyMaxLength3) {
-				classProficiencies3.pop();
 				alert(`you can only choose a maximum of ${classProficiencyMaxLength3} proficiencies`);
 			}
 			
@@ -271,6 +269,7 @@ if (toSummary !== null) {
 	});
 }
 
+//summary
 let summary = document.getElementById("#page:summary");
 
 if (summary !== null) {
