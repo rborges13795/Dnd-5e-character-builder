@@ -13,7 +13,7 @@ composer install
 ```
 ### Usage
 Initiate your server and check the routes in /config/routes.yaml and copy the path under 'index'. From there you can start to build your character starting with the race, although
-you can choose the class or scores if you prefer. This web app uses sessions to store your choices to make up the summary of your character at the summary page.
+you can choose the class or scores first if you prefer. This web app uses sessions to store your choices to make up the summary of your character at the summary page.
 To initiate a server:
 ```
 php -S localhost:8080 -t public
