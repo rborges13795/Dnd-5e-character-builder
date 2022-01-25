@@ -2751,12 +2751,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/rborges13795/dnd-5e-wrapper.git",
-                "reference": "bd4ec5105c4848a763dbaca357ee408333b276e4"
+                "reference": "5e7385eac66cd1167adbea6ce01aa54018bba6bf"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/rborges13795/dnd-5e-wrapper/zipball/bd4ec5105c4848a763dbaca357ee408333b276e4",
-                "reference": "bd4ec5105c4848a763dbaca357ee408333b276e4",
+                "url": "https://api.github.com/repos/rborges13795/dnd-5e-wrapper/zipball/5e7385eac66cd1167adbea6ce01aa54018bba6bf",
+                "reference": "5e7385eac66cd1167adbea6ce01aa54018bba6bf",
                 "shasum": ""
             },
             "require": {
@@ -2775,7 +2775,7 @@
                 "issues": "https://github.com/rborges13795/dnd-5e-wrapper/issues",
                 "source": "https://github.com/rborges13795/dnd-5e-wrapper/tree/main"
             },
-            "time": "2021-12-28T01:45:53+00:00"
+            "time": "2022-01-25T19:53:21+00:00"
         },
         {
             "name": "sensio/framework-extra-bundle",

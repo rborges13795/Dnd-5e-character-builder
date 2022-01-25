@@ -2,29 +2,28 @@
 namespace App\Controller;
 
 use Symfony\Component\HttpFoundation\Response;
-use Dnd5eApi\Entity\Races;
-use Dnd5eApi\Entity\Classes;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 use App\Entity\Character;
-use Dnd5eApi\Entity\AbilityScores;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Dnd5eApi\DndApi;
 
 class CharacterController extends AbstractController
 {
-
+    private $dndApi;
     private $requestStack;
 
     public function __construct(RequestStack $requestStack)
     {
         $this->requestStack = $requestStack;
+        $this->dndApi = new DndApi();
     }
     
     public function index(): Response
     {
         $this->requestStack->getSession()->clear();
         
-        $racesAll = new Races();
+        $racesAll = $this->dndApi->races();
         $allRaces = $racesAll->allFirstCharUppercase();
         
         return $this->render('races.html.twig', [
@@ -35,7 +34,7 @@ class CharacterController extends AbstractController
     public function chooseRace(): Response
     {
         $this->requestStack->getSession();
-        $racesAll = new Races();
+        $racesAll = $this->dndApi->races();
         $allRaces = $racesAll->allFirstCharUppercase();
         
         return $this->render('races.html.twig', [
@@ -49,7 +48,7 @@ class CharacterController extends AbstractController
         $character = $session->get('character');
         $characterCreate = $this->saveRace($characterRace, $character);
         $session->set('character', $characterCreate);
-        $racesAll = new Races();
+        $racesAll = $this->dndApi->races();
         $race = $racesAll->$characterRace();
         $allRaces = $racesAll->allFirstCharUppercase();
 
@@ -69,7 +68,7 @@ class CharacterController extends AbstractController
             $session->set('character', $raceProficiencies);
         }
         
-        $classesAll = new Classes();
+        $classesAll = $this->dndApi->classes();
         $classes = $classesAll->allFirstCharUppercase();
 
         return $this->render('classes.html.twig', [
@@ -77,14 +76,13 @@ class CharacterController extends AbstractController
         ]);
     }
 
-    // sanitize string received
     public function classChosen(string $class): Response
     {
         $session = $this->requestStack->getSession();
         $character = $session->get('character');
         $characterCreate = $this->saveClass($class, $character);
         $session->set('character', $characterCreate);
-        $classesAll = new Classes();
+        $classesAll = $this->dndApi->classes();
         $class = $classesAll->$class();
         $allClasses = $classesAll->allFirstCharUppercase();
 
@@ -106,7 +104,7 @@ class CharacterController extends AbstractController
         }
         
         $abilityScores = [];
-        $scores = new AbilityScores();
+        $scores = $this->dndApi->abilityScores();
         foreach ($scores->all() as $score) {
             $abilityScores[] = $scores->$score();
         }
@@ -125,7 +123,7 @@ class CharacterController extends AbstractController
         $scores = $this->saveScores($character, $request);
         $session->set('character', $scores);
         
-        $classesAll = new Classes();
+        $classesAll = $this->dndApi->classes();
         $class = $classesAll->$class();
 
         return $this->render('spells.html.twig', [
@@ -143,7 +141,7 @@ class CharacterController extends AbstractController
      * $session = $this->requestStack->getSession();
      * // add class spells to character
      * $classChosen = $class;
-     * $classesAll = new Classes();
+     * $classesAll = $this->dndApi->classes();
      * $class = $classesAll->$classChosen();
      *
      * return $this->render('equipment.html.twig', [
@@ -167,7 +165,7 @@ class CharacterController extends AbstractController
             $session->set('character', $scores);
         }
         
-        $races = new Races();
+        $races = $this->dndApi->races();
         $race = $character->getRace();
         if ($race !== "") {
             $charRace = $races->$race();            
@@ -175,7 +173,7 @@ class CharacterController extends AbstractController
             $charRace = "";
         }
         
-        $classes = new Classes();
+        $classes = $this->dndApi->classes();
         $class = $character->getClass();
         if ($class !== "") {
             $charClass = $classes->$class();
@@ -289,7 +287,6 @@ class CharacterController extends AbstractController
         
         return $character;
     }
-    
 
 }
 
