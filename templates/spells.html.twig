@@ -2,7 +2,7 @@
 {% block title %}Index{% endblock %}
 {% block content %}
 
-{% if class is defined and class is not null and spells is defined and spells is null %}
+{% if class is defined and class is not null and spells is defined and spells is empty %}
     <section id="#noSpells">
         <div id="#page:chooseSpells" class="container">
         	<div class="row border border-1">
@@ -26,7 +26,7 @@
     </section>
     {% endif %}
     
-    {% if class is defined and class is not null and spells is defined and spells is not null %}
+    {% if class is defined and class is not null and spells is defined and spells is not empty %}
     <section id="#spells">
         <div id="#page:chooseSpells" class="container">
         	<div class="row border border-1">
@@ -81,4 +81,5 @@
     	</div>
     </section>
 {% endif %}
+	<script src="{{ asset('assets/js/spells.js') }}" type="module"></script>
 {% endblock %}

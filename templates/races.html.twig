@@ -127,12 +127,11 @@
                     </div>
                 {% endif %}
             </div>
-            {% if race is not defined or race is null %}
-            <button type="button" id="#toChosenRace" class="btn btn-dark">Save</button>
-            {% else %}
-            <button type="button" id="#toClass" class="btn btn-dark">Save</button>
+            {% if race is defined and race is not null %}
+	            <button type="button" id="#toClass" class="btn btn-dark">Save</button>
             {% endif %}
         </div>
     </section>
 {% endif %}
+	<script src="{{ asset('assets/js/races.js') }}" type="module"></script>
 {% endblock %}
